@@ -1,5 +1,5 @@
-<p align="center"> <font size=20, face="Sans Serif"> APRIORIT </font> </p>
-<p align="center"> <font size=5> Задания со стажировки</font> </p>
+# APRIORIT 
+## Задания со стажировки
 
 ______________
 
