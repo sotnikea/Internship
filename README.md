@@ -1,4 +1,4 @@
-<p align="center"> <font size=10, face="Sans Serif"> APRIORIT </font> </p>
+<p align="center"> <font size=20, face="Sans Serif"> APRIORIT </font> </p>
 <p align="center"> <font size=5> Задания со стажировки</font> </p>
 
 ______________
