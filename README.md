@@ -20,7 +20,7 @@ ______________
     + [Конспект](part5/README.md)
     + Дз. 
 6. Qt Framework. Basic concepts
-    + Конспект
+    + [Конспект](part6/README.md)
     + Дз.
 7. Qt Framework. Desktop & mobile GUI via QML
     + Конспект
