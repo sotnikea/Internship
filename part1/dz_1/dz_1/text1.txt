@@ -1,0 +1,3 @@
+Строка для считывания
+One more string for reading
+И строка with different symbols !@#$%^&*() и цифр 1234567890
