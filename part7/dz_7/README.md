@@ -20,13 +20,19 @@
 ![image_7_1](https://github.com/sotnikea/Apriorit/raw/main/part7/img/pic_7_1.png)   
 
 Сразу после этого, по умолчанию включается табличное отображение изображений
+____
 
 Кнопка **ListView** - включает просмотр изображений в виде списка    
 ![image_7_2](https://github.com/sotnikea/Apriorit/raw/main/part7/img/pic_7_2.png)  
+______
+
 Кнопка **TableView** - включает просмотр изображений в виде таблицы    
 ![image_7_3](https://github.com/sotnikea/Apriorit/raw/main/part7/img/pic_7_3.png)  
+______
+
 Кнопка **PathView** - включает просмотр изображений в виде закольцованной горизонтальной полосы прокрутки (При достижении последнего изображения - вновь отображается первое из папки)  
 ![image_7_4](https://github.com/sotnikea/Apriorit/raw/main/part7/img/pic_7_1.png)  
+_______
 
 Щелчок **ЛКМ** по любому изображению открывает его на весь размер окна приложения. Повторный щелчок возвращает изображение в предыдущий режим.  
 ![image_7_5](https://github.com/sotnikea/Apriorit/raw/main/part7/img/pic_7_5.png)  
