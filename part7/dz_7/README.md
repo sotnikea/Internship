@@ -17,16 +17,16 @@
 
 После запуска решения с помощью кнопки **OpenFolder** необходимо выбрать любое изображение из папки, которую необходимо отобразить.
 
-![image_7_1](https://github.com/sotnikea/Apriorit/raw/main/part7/pic_7_1.png)   
+![image_7_1](https://github.com/sotnikea/Apriorit/raw/main/part7/img/pic_7_1.png)   
 
 Сразу после этого, по умолчанию включается табличное отображение изображений
 
 Кнопка **ListView** - включает просмотр изображений в виде списка    
-![image_7_2](https://github.com/sotnikea/Apriorit/raw/main/part7/pic_7_2.png)  
+![image_7_2](https://github.com/sotnikea/Apriorit/raw/main/part7/img/pic_7_2.png)  
 Кнопка **TableView** - включает просмотр изображений в виде таблицы    
-![image_7_3](https://github.com/sotnikea/Apriorit/raw/main/part7/pic_7_3.png)  
+![image_7_3](https://github.com/sotnikea/Apriorit/raw/main/part7/img/pic_7_3.png)  
 Кнопка **PathView** - включает просмотр изображений в виде закольцованной горизонтальной полосы прокрутки (При достижении последнего изображения - вновь отображается первое из папки)  
-![image_7_4](https://github.com/sotnikea/Apriorit/raw/main/part7/pic_7_1.png)  
+![image_7_4](https://github.com/sotnikea/Apriorit/raw/main/part7/img/pic_7_1.png)  
 
 Щелчок **ЛКМ** по любому изображению открывает его на весь размер окна приложения. Повторный щелчок возвращает изображение в предыдущий режим.  
-![image_7_5](https://github.com/sotnikea/Apriorit/raw/main/part7/pic_7_5.png)  
+![image_7_5](https://github.com/sotnikea/Apriorit/raw/main/part7/img/pic_7_5.png)  
