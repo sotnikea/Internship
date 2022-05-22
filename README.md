@@ -22,7 +22,7 @@
     + [Дз 6. Реализация **сигнал-слотов** в QT](part6/dz_6/)
 7. Qt Framework. Desktop & mobile GUI via QML
     + Конспект
-    + Дз.
+    + [Дз 7. Реализация ImageViewer на QML](part7/dz_7/).
 8. Разработка под MacOS
     + Конспект
     + Дз.
