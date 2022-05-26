@@ -1,0 +1,93 @@
+{
+   "candidates" : [
+      {
+         "geometry" : {
+            "location" : {
+               "lat" : 48.470247,
+               "lng" : 35.036206
+            }
+         },
+         "name" : "Coffee Life"
+      },
+      {
+         "geometry" : {
+            "location" : {
+               "lat" : 48.469434,
+               "lng" : 35.038985
+            }
+         },
+         "name" : "Have Coffee"
+      },
+      {
+         "geometry" : {
+            "location" : {
+               "lat" : 48.466561,
+               "lng" : 35.045186
+            }
+         },
+         "name" : "AROMA KAVA"
+      },
+      {
+         "geometry" : {
+            "location" : {
+               "lat" : 48.463783,
+               "lng" : 35.042595
+            }
+         },
+         "name" : "Mr. Coffee"
+      },
+      {
+         "geometry" : {
+            "location" : {
+               "lat" : 48.463516,
+               "lng" : 35.048889
+            }
+         },
+         "name" : "DoubleDecker"
+      },
+      {
+         "geometry" : {
+            "location" : {
+               "lat" : 48.425694,
+               "lng" : 35.025487
+            }
+         },
+         "name" : "Mocco bar"
+      },
+      {
+         "geometry" : {
+            "location" : {
+               "lat" : 48.451214,
+               "lng" : 35.057789
+            }
+         },
+         "name" : "Confetti"
+      },
+      {
+         "geometry" : {
+            "location" : {
+               "lat" : 48.460239,
+               "lng" : 35.069301
+            }
+         },
+         "name" : "One dollar bar"
+      },
+      {
+         "geometry" : {
+            "location" : {
+               "lat" : 48.459414,
+               "lng" : 35.064731
+            }
+         },
+         "name" : "Heisenberg Coffee Lab"
+      },
+      {
+         "geometry" : {
+            "location" : {
+               "lat" : 48.423311,
+               "lng" : 35.058121
+            }
+         },
+         "name" : "Sopranos"
+      }]
+}
