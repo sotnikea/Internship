@@ -36,3 +36,7 @@ _______
 
 Щелчок **ЛКМ** по любому изображению открывает его на весь размер окна приложения. Повторный щелчок возвращает изображение в предыдущий режим.  
 ![image_7_5](https://github.com/sotnikea/Apriorit/raw/main/part7/img/pic_7_5.png)  
+
+
+# Ссылки
+- Документация по QT на русском: http://www.doc.crossplatform.ru/qt/4.7.x/model-view-programming.html
