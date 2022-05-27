@@ -28,20 +28,20 @@
 
 ### *Сборка проекта*
 Для сборки проекта в папке с его файлами необходимо открыть терминал и вызвать команду `make`. Результатом будет получение исполняемого файла с названием `send`  
-![image_9_1](https://github.com/sotnikea/Apriorit/raw/main/part7/img/image_9_1.png)   
+![image_9_1](https://github.com/sotnikea/Apriorit/raw/main/part9/img/image_9_1.png)   
 
 Существуют разные варианты использование полученного исполняемого файла.   
 Введите в терминале './send' и через пробел путь и название файла для копирования, а так же путь и название файла, который должен быть создан  
-![image_9_2](https://github.com/sotnikea/Apriorit/raw/main/part7/img/image_9_2.png)   
+![image_9_2](https://github.com/sotnikea/Apriorit/raw/main/part9/img/image_9_2.png)   
 
 Так же достаточно просто ввести './send' без аргументов. Это вызовет возможность ввода путей и имен файлов в процессе выполнения программы  
-![image_9_3](https://github.com/sotnikea/Apriorit/raw/main/part7/img/image_9_3.png)   
+![image_9_3](https://github.com/sotnikea/Apriorit/raw/main/part9/img/image_9_3.png)   
 
 Отсутствие достаточно количества аргументов при вызове './send' так же приведет к предложению ввести необходимые пути и имена к файлам в процессе выполнения программы  
-![image_9_4](https://github.com/sotnikea/Apriorit/raw/main/part7/img/image_9_4.png)   
+![image_9_4](https://github.com/sotnikea/Apriorit/raw/main/part9/img/image_9_4.png)   
 
 Попытка указать несуществующий файл для копирования любым из способов исполнения программы приведет к отмене копирования и выводу сообщения об ошибке  
-![image_9_5](https://github.com/sotnikea/Apriorit/raw/main/part7/img/image_9_5.png)   
+![image_9_5](https://github.com/sotnikea/Apriorit/raw/main/part9/img/image_9_5.png)   
 
 ### *Задание 2*
 Проект содержит:
@@ -50,12 +50,12 @@
 
 ### *Сборка проекта*
 Для сборки проекта в папке с его файлами необходимо открыть терминал и вызвать команду `make`. Результатом будет получение исполняемого файла с названием `start`  
-![image_9_6](https://github.com/sotnikea/Apriorit/raw/main/part7/img/image_9_6.png)   
+![image_9_6](https://github.com/sotnikea/Apriorit/raw/main/part9/img/image_9_6.png)   
 
 Для запуска исполняемого файла достаточно ввести в терминале `./start`. При успешном выполнении в терминал будет выведено соответствующее сообщение  
-![image_9_7](https://github.com/sotnikea/Apriorit/raw/main/part7/img/image_9_7.png)   
+![image_9_7](https://github.com/sotnikea/Apriorit/raw/main/part9/img/image_9_7.png)   
 а в папке проекта будет создан файл с соответствующим условию задания текстом
-![image_9_8](https://github.com/sotnikea/Apriorit/raw/main/part7/img/image_9_8.png)   
+![image_9_8](https://github.com/sotnikea/Apriorit/raw/main/part9/img/image_9_8.png)   
 
 # Ссылки
 - Установка образа Ubuntu в VirtualBox https://www.youtube.com/watch?v=vY9QNwX_IsY
