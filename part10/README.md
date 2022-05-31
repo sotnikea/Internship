@@ -9,6 +9,7 @@
 4. [Рекомендации по разработке многопоточных приложений](#r4)
 5. [Литература](#r5)
 6. [Упражнения для самостоятельной работы](#r6)
+7. [Примеры](#r7)
 
 
 ## <a name="r1">Основные понятия</a>
@@ -104,4 +105,935 @@ void Consumer() {
 - Реализуйте простейший thread pool
 - Напишите свою реализацию rwlocks
 
+## <a name="r7">Примеры</a>
 
+**thread**
+- Поток нельзя копировать
+- Поток можно перемещать по rValue
+- В поток можно передать функцию и аргументы этой функции
+- Чтобы передать в функцию ссылку, использовать `std::ref`, иначе это будет ссылка на копию объекта
+- Если не использовано `join` ил `detach`, будет вызван `std::termination`
+
+**this_thread**:
+- this_thread.get_id – возвращает идентификатор потока исполнения, в котором она вызвана
+- this_thread.yield – сигнализирует ОС, что поток желает приостановить свое выполнение и дать шанс на исполнение другим потокам
+- this_thread.sleep_until – поток приостанавливает выполнение до наступления момента, переданного в качестве аргумента
+- this_thread.sleep_for – поток приостанавливает выполнение на некий, заданный промежуток времени
+
+**mutex**
+- lock – если мьютекс не принадлежит никакому потоку, тогда поток, вызвавший lock, становится его обладателем
+- try_lock - если мьютекс не принадлежит никакому потоку, тогда поток, вызвавший try_lock, становится его обладателем и метод возвращает true. В противном случае возвращает false. try_lock не блокирует текущий поток
+- unlock – освобождает ранее захваченный мьютекс.
+
+**unique_lock** может
+- Принимать не захваченный мьютекс в конструкторе
+- Захватывать и освобождать мьютекс непосредственными вызовами lock/unlock
+- Выполнять временной захват
+- Может быть перемещен в другой объект unique_lock
+
+**Разница между lock_guard и unique_lock**  
+`lock_guard` и `unique_lock` - почти то же самое. Разница в том, что вы можете заблокировать и разблокировать `std :: unique_lock`. `std :: lock_guard` будет заблокирован только один раз при построении и разблокирован при уничтожении.
+- `lock_guard`: когда объект создан, он пытается получить мьютекс (вызывая `lock()`), а когда объект уничтожен, он автоматически освобождает мьютекс (вызывая `unlock()`).
+- `unique_lock`: также поддерживает отложенную блокировку, временную блокировку, рекурсивную блокировку и использование условных переменных.
+
+**condition_variable** - условные переменные
+- `condition_variable`: требует от любого потока перед ожиданием сначала выполнить std::unique_lock
+- `condition_variable_any`: более общая реализация, которая работает с любым типом, который можно заблокировать. Эта реализация может быть более дорогим (с точки зрения ресурсов и производительности) для использования, поэтому ее следует использовать только если необходима те дополнительные возможности, которые она обеспечивает
+
+Как работают условные переменные:
+- Должен быть хотя бы один поток, ожидающий, пока какое-то условие станет истинным. Ожидающий поток должен сначала выполнить `unique_lock`. Эта блокировка передается методу `wait()`, который освобождает мьютекс и приостанавливает поток, пока не будет получен сигнал от условной переменной. Когда это произойдет, поток пробудится и снова выполнится `lock`.
+- Должен быть хотя бы один поток, сигнализирующий о том, что условие стало истинным. Сигнал может быть послан с помощью `notify_one()`, при этом будет разблокирован один (любой) поток из ожидающих, или `notify_all()`, что разблокирует все ожидающие потоки.
+- В виду некоторых сложностей при создании пробуждающего условия, которое может быть предсказуемым в многопроцессорных системах, могут происходить ложные пробуждения (`spurious wakeup`). Это означает, что поток может быть пробужден, даже если никто не сигнализировал условной переменной. Поэтому необходимо еще проверять, верно ли условие пробуждение уже после того, как поток был пробужден. Т.к. ложные пробуждения могут происходить многократно, такую проверку необходимо организовывать в цикле.
+
+**semaphore**  
+Семафор (semaphore) – примитив синхронизации работы процессов и потоков, в основе которого лежит счётчик, над которым можно производить две атомарные операции: увеличение и уменьшение значения на единицу, при этом операция уменьшения для нулевого значения счётчика является блокирующей. Служит для построения более сложных механизмов синхронизации и используется для синхронизации параллельно работающих задач, для защиты передачи данных через разделяемую память, для защиты критических секций, а также для управления доступом к аппаратному обеспечению.
+___
+Создание треда и **join**
+~~~C++
+#include <iostream>
+#include <thread>
+
+//Поток с некоторым заданием
+void task() {
+	std::cout << "task start" << std::endl;
+	std::this_thread::sleep_for(std::chrono::seconds(3));	//Некая полезная работа
+	std::cout << "task finished" << std::endl;
+
+}
+
+int main(void) {
+	std::thread t(task);		//Создаем поток t и помещаем в него функцию task
+								//С этого места в программе работает 2 потока
+
+	std::cout << "Main thread" << std::endl;
+
+	t.join();	//Ожидаем, пока поток t завершится.
+				//Последующие действия не будут продолжаться до его завершения
+	
+	std::cout << "Main thread ended" << std::endl;
+}
+~~~
+~~~
+Вывод:
+Main thread
+task start
+task finished
+Main thread ended
+~~~
+___
+
+**detach**
+~~~C++
+#include <iostream>
+#include <thread>
+
+void task()
+{
+    while (true)
+    {
+        std::cout << "some_useful_job" << std::endl;
+        std::this_thread::sleep_for(std::chrono::seconds(1));
+    }
+}
+
+int main()
+{
+    std::thread t(task);    //Создаем дополнительный поток и помещаем 
+                            //в него функцию task
+    t.detach();             //Открепляем созданный поток от основного
+                            //Теперь потоки работают независимо друг от друга
+
+    
+    std::cout << "Main thread start" << std::endl;
+    std::this_thread::sleep_for(std::chrono::seconds(3));
+    std::cout << "Main thread end" << std::endl;
+}
+~~~
+___
+Потеря в потоке связи с объектом из-за его удаления
+~~~C++
+#include <iostream>
+#include <thread>
+
+class some_resource { /* содержит выделение памяти в куче */ };
+
+void background_task(int& data)
+{
+    while (true)
+    {
+        //Вызываем некий метод 
+        std::cout << data.getValueByIndex(3) << std::endl;
+    }
+}
+
+void background_task_launcher()
+{
+    some_resource resource; //Создаем объекта класса
+
+    //И передаем его по ссылке в функцию, выделяя отдельный поток
+    std::thread task([&]()
+        {
+            background_task(resource);
+        });
+
+    task.detach();  //Открепляем текущего потока
+}   //Здесь срабатывает деструктор класса, и объект удаляется
+    //при этом запущенный поток продолжает пытаться обращаться к данным этого объекта
+
+int main()
+{
+    background_task_launcher();
+}
+
+~~~
+___
+Падение программы в случае исключения отработанного до join или detach
+~~~C++
+#include <thread>
+#include <iostream>
+
+
+void background_task(int& data)
+{
+    while (true)
+    {
+        //Некоторая полезная работа
+        std::cout << ++data << std::endl;
+        std::this_thread::sleep_for(std::chrono::seconds(1));
+    }
+}
+
+void background_task_launcher()
+{
+    auto some_local_state = 0;
+
+    //Запускаем в отдельном потоке функцию
+    std::thread task([&]()
+        {
+            background_task(some_local_state);
+        });
+
+    //task.detach();    //Если разместить здесь, поток будет продолжать работать
+                        //даже с учетом брошенного исключения
+
+    //Если в этом месте возникнет исключение
+    //идущий далее detach не отработает
+    throw std::runtime_error("oops");
+
+    task.detach();  //Не отработает из-за исключения, что приведет к падению программы
+}
+
+int main()
+{
+    try {
+        background_task_launcher();
+    }
+    catch (...) {
+        std::cout << "Error" << std::endl;
+    }
+    std::this_thread::sleep_for(std::chrono::seconds(10));
+}
+~~~
+___
+Два потока работающие с одним и тем же значением
+~~~C++
+#include <iostream>
+#include <thread>
+
+uint32_t Y = 5; //Некоторая глобальная переменная
+
+void foo()
+{
+    Y += 1;
+}
+
+void bar()
+{
+    Y *= 2;
+}
+
+int main()
+{
+    //Создаем два потока, каждый из которых 
+    //работает с одной и той же глобальной переменной
+    std::thread t1(foo);
+    std::thread t2(bar);
+
+    t1.join();
+    t2.join();
+
+    //Выводим результат на экран
+    std::cout << Y << std::endl;
+}
+~~~
+Возможный вывод:
+~~~
+Если первой отработал foo, потом bar
+12 
+~~~
+~~~
+Если первой отработал bar, потом foo
+11 
+~~~
+~~~
+Если за то время, пока foo взял значение и обработал, bar так же успел взять значение и обработал его раньше. Фактически foo перезаписал значение не имея изменений внесенных bar
+6 
+~~~
+___
+Передача одной и той же фунции с разными аргументами в разные потоки
+~~~C++
+#include <iostream>
+#include <thread>
+#include <vector>
+
+//Функция для вывода вектора на экран
+void foo(const std::vector<int>& v) {
+    for (const auto& i : v) {
+        std::cout << i << std::endl;
+    }
+}
+
+int main()
+{
+    //Создаем два вектора с разными значениями
+    std::vector<int> v1{ 1,2,3,4,5,6,7,8,9 };
+    std::vector<int> v2{ 10,11,12,13,14,15,16,17,18,19,20 };
+
+    //Создаем два потока и помещаем в них одну и ту же функцию
+    //но передаем в функции разные векторы
+    //При этом вывод смешает значения обоих векторов
+    std::thread t1(foo, v1);
+    std::thread t2(foo, v2);
+
+    t1.join();
+    t2.join();
+
+}
+
+~~~
+___
+Race condition и Data race
+Race condition - Когда результат программи зависит от того, в каком порядке будет выполняться поток
+Data race - Когда несколько потоков пытаются использовать общие данные
+Пример проблемы
+~~~C++
+#include <list>
+
+std::list<int> some_list;
+
+//Если один поток производит удаление из списка 
+void remove_from_list(int value)
+{
+    some_list.remove(value);
+}
+
+//А другой в это же время пытает значение добавить
+void add_to_list(int new_value)
+{
+    some_list.push_back(new_value);
+}
+~~~
+___
+mutex для синхронизации при работе с общей функцией
+
+~~~C++
+#include <iostream>
+#include <thread>
+#include <vector>
+#include <mutex>
+
+std::mutex v_mutex; 
+
+//Функция для вывода вектора на экран
+void foo(const std::vector<int>& v) {
+    v_mutex.lock(); //Первый поток захватывает mutex, 
+                    //и следующий поток сможет начать выполнение этого фрагмента
+                    //только после освобождения mutex
+                    //Фактически стоит в очереди в ожидании
+    for (const auto& i : v) {
+        std::cout << i << std::endl;
+    }
+    v_mutex.unlock();   //Освобождаем mutex
+}
+
+int main()
+{
+    //Создаем два вектора с разными значениями
+    std::vector<int> v1{ 1,2,3,4,5,6,7,8,9 };
+    std::vector<int> v2{ 10,11,12,13,14,15,16,17,18,19,20 };
+
+    //Создаем два потока и помещаем в них одну и ту же функцию
+    //но передаем в функции разные векторы
+    //При этом вывод НЕ смешает значения обоих векторов, т.к. использован mutex
+    std::thread t1(foo, v1);
+    std::thread t2(foo, v2);
+
+    t1.join();
+    t2.join();
+
+}
+~~~
+___
+lock_guard вместо unlock для mutex
+~~~C++
+#include <iostream>
+#include <thread>
+#include <vector>
+#include <mutex>
+
+std::mutex v_mutex; 
+
+//Функция для вывода вектора на экран
+void foo(const std::vector<int>& v) {
+
+    //Используем lock_guard, который сам разблокирует объект при выходе из области видимости
+    std::lock_guard<std::mutex> v_guard(v_mutex); 
+    for (const auto& i : v) {
+        std::cout << i << std::endl;
+    }
+
+    //Здесь теперь не нужен unlock
+}
+
+int main()
+{
+    //Создаем два вектора с разными значениями
+    std::vector<int> v1{ 1,2,3,4,5,6,7,8,9 };
+    std::vector<int> v2{ 10,11,12,13,14,15,16,17,18,19,20 };
+
+    
+    std::thread t1(foo, v1);
+    std::thread t2(foo, v2);
+
+    t1.join();
+    t2.join();
+}
+~~~
+___
+shared_lock - позволяет читать данные нескольким потокам использующим общий мьютекс, а менять данные только одному, использующему тот же общий мьютекс
+
+~~~C++
+#include <iostream>
+#include <thread>
+#include <string>
+#include <shared_mutex>
+#include <sstream>
+
+std::shared_mutex s_mutex;  //Создаем общий мутекс
+std::string s = "Some text";    //Общий ресурс
+
+void Write(int num) {
+    std::lock_guard<std::shared_mutex> guard(s_mutex);
+    std::cout << "Write work ---> "; //Эта строка выведется одновременно (не разобьется на части) с остальными
+                                            //выводами функции, т.к. использован lock_guard блокирующий остальных
+    std::cout << "Write " << num << std::endl;
+    std::stringstream ss;
+    ss << "New text " << num<<std::endl;
+    s = ss.str();
+}
+
+void Read(int num) {    
+    std::shared_lock<std::shared_mutex> guard(s_mutex);
+    std::cout << "Read work ---> "; //Эта строка выведется врассыпную (разобьется на части) с остальными
+                                            //выводами функции, т.к. использован shared_lock разрешающий доступ остальных
+    std::stringstream ss;
+    ss << "Read N" << num<<": "<<s << std::endl;
+    std::cout << ss.str();
+}
+
+void ReadManager() {
+    std::thread r[10];
+    for (int i = 0; i < 10; i++) {
+        r[i] = std::thread(Read, i);
+    }
+
+    for (int i = 0; i < 10; i++) {
+        r[i].join();
+    }
+}
+
+void WriteManager() {
+    std::thread w[5];
+    for (int i = 0; i < 5; i++) {
+        w[i] = std::thread(Write, i);
+    }
+
+    for (int i = 0; i < 5; i++) {
+        w[i].join();
+    }
+}
+
+int main()
+{    
+    std::thread t1(ReadManager);
+    std::thread t2(WriteManager);
+
+    t1.join();
+    t2.join();
+}
+~~~
+___
+Deadlock - Ситуация, когда один поток захватывает мьютекс, который нужен другому потоку. А другой поток захватывает мьютекс, который нужен этому потоку. Как результат, они взаимно блокируют друг друга
+
+~~~C++
+#include<mutex>
+#include<thread>
+#include<iostream>
+
+std::mutex resourceX;
+std::mutex resourceY;
+
+void thread_A_func()
+{
+    while (true)
+    {
+        std::unique_lock<std::mutex> lockX(resourceX);  //Блокируем мьютех Х
+        std::cout << "thread_A taked resourse X" << std::endl;
+        std::this_thread::sleep_for(std::chrono::seconds(1));   //Полезная работа
+
+        std::unique_lock<std::mutex> lockY(resourceY); //Пытаемся блокировать мьютех У, но он уже заняти
+                                                       //функцией В, которая в свою очередь ждет освобождения мьютекса Х
+
+        std::cout << "thread_A working" << std::endl;
+    }
+}
+
+void thread_B_func()
+{
+    while (true)
+    {
+        std::unique_lock<std::mutex> lockY(resourceY); //Блокируем мьютекс У
+        std::cout << "thread_B taked resourse Y" << std::endl;
+        std::this_thread::sleep_for(std::chrono::seconds(1));   //Полезная работа
+        std::unique_lock<std::mutex> lockX(resourceX);  //Пытаемся заблокировать мьютекс Х
+                                                        //но он занят функцией А, которая ждет разблокировки
+                                                        //мьютекса У
+
+        std::cout << "thread_B working" << std::endl;
+    }
+}
+
+int main(void) {
+    std::thread t1(thread_A_func);
+    std::thread t2(thread_B_func);
+
+    t1.join();
+    t2.join();
+}
+~~~
+___
+Deadlock в классе
+~~~C++
+#include<mutex>
+#include<thread>
+#include<iostream>
+#include<list>
+
+
+class DataHolder
+{
+public:
+    // ... 
+    DataHolder() = default;
+
+    //Принимаем другой список по rValue
+    DataHolder& operator=(DataHolder&& other) noexcept
+    {
+        swap(*this, other);
+        return *this;
+    }
+
+    // ... 
+private:
+    void swap(DataHolder& lhs, DataHolder& rhs) const
+    {
+        std::cout << "Start swap" << std::endl;
+        //Блокируем оба списка, чтобы произвести копирование
+        //Именно здесь потоки блокируют друг друга при запуске перемещения для обоих списков сразу
+        //в разных потоках
+        std::lock_guard<std::mutex> lhs_lock(lhs.m_useful_data_lock);
+        std::this_thread::sleep_for(std::chrono::seconds(1));   //Некоторая полезная работа
+        std::lock_guard<std::mutex> rhs_lock(rhs.m_useful_data_lock);
+
+        std::swap(lhs.m_useful_data, rhs.m_useful_data);
+        std::cout << "End swap" << std::endl;
+    }
+
+private:
+    std::list<int> m_useful_data;   //Некоторый список элементов
+    std::mutex m_useful_data_lock;  //Мьютекс для блокировки при копировании данных
+};
+
+DataHolder data_holder_1;
+DataHolder data_holder_2;
+
+//Переносим из второго в первый
+void thread_A() {
+    data_holder_1 = std::move(data_holder_2);
+}
+
+//Переносим из первого во второй
+void thread_B() {
+    data_holder_2 = std::move(data_holder_1);
+}
+
+int main(void) {
+    //В процессе выполнения потоки блокируют друг друга
+    std::thread t1(thread_A);
+    std::thread t2(thread_B);
+
+    t1.join();
+    t2.join();
+
+}
+
+~~~
+___
+scoped_lock для решения проблемы Deadlock
+scoped_lock захватывает мьютексы в определенной последовательности
+
+C++17 
+~~~C++
+#include<mutex>
+#include<thread>
+#include<iostream>
+#include<list>
+
+
+class DataHolder
+{
+public:
+    // ... 
+    DataHolder() = default;
+    
+    //Принимаем другой список по rValue
+    DataHolder& operator=(DataHolder&& other) noexcept
+    {        
+        swap(*this, other);
+        return *this;
+    }
+
+    // ... 
+private:
+    void swap(DataHolder& lhs, DataHolder& rhs) const
+    {
+        std::cout << "Start swap" << std::endl;
+
+        //Контролирует раздачу доступа и deadlock ситуации
+        std::scoped_lock lock(lhs.m_useful_data_lock, rhs.m_useful_data_lock);
+
+        std::swap(lhs.m_useful_data, rhs.m_useful_data);
+    }
+   
+
+private:
+    std::list<int> m_useful_data;   //Некоторый список элементов
+    std::mutex m_useful_data_lock;  //Мьютекс для блокировки при копировании данных
+};
+
+DataHolder data_holder_1;
+DataHolder data_holder_2;
+
+//Переносим из второго в первый
+void thread_A() {
+    data_holder_1 = std::move(data_holder_2);
+}
+
+//Переносим из первого во второй
+void thread_B() {
+    data_holder_2 = std::move(data_holder_1);
+}
+
+int main(void) {
+    //В процессе выполнения потоки блокируют друг друга
+    std::thread t1(thread_A);
+    std::thread t2(thread_B);
+
+    t1.join();
+    t2.join();
+
+}
+
+~~~
+___
+Livelock и try_to_lock
+Livelock то же что и Deadlock. Отличие в том, что при Deadlock оба заблокированных друг другом потока бесконечно ждут своей очереди на выполнение. А в Livelock бесконечно перезапускается цикл у обоих потоков, пытающийся захватить ресурс и терпящий неудачу  
+Livelock- это программы, которые активно выполняют параллельные операции, но эти операции никак не влияют на продвижение состояния программы вперед
+
+~~~C++
+#include <iostream>
+#include <thread>
+#include <mutex>
+
+
+std::mutex resourceX;
+std::mutex resourceY;
+
+void thread_A_func()
+{
+    while (true)
+    {
+        std::unique_lock<std::mutex> lockX(resourceX);          //Создаем гвард для мьютекса Х
+        std::cout << "thread_A taked resourse X\n";  
+        std::this_thread::sleep_for(std::chrono::seconds(1));   //Выполняем некоторую полезную работу
+        std::unique_lock<std::mutex> lockY(resourceY, std::try_to_lock); //Пытаемся захватить мьютекс У
+                                                                         //try_to_lock вернет true если ресурс свободен и удалось его захватить
+                                                                         //false если нет. Тогда ресурс остается не захваченным
+
+        if (lockY.owns_lock() == false) continue;   //Если мьютекс ресурса У захватить не удалось, переходим к следующей итерации цикла
+        
+        std::cout << "thread_A working" << std::endl; //Работа, которая должна быть выполнена после захвата обоих мьютексов
+                                                      //Эта часть не выполняется, т.к. функция В так же не может получить доступ к обоим мьютексам
+        break;
+    }
+}
+
+void thread_B_func()
+{
+    while (true)
+    {
+        std::unique_lock<std::mutex> lockY(resourceY); //Создаем гвард для мьютекса У
+
+        std::cout << "thread_B taked resourse Y\n";
+        std::this_thread::sleep_for(std::chrono::seconds(1));   //Выполняем некоторую полезную работу
+
+        std::unique_lock<std::mutex> lockX(resourceX, std::try_to_lock);    //Так же пытаемся захватить мьютекс и не можем,т.к. он уже захвачен функцией А
+        if (lockX.owns_lock() == false) continue;   //Условие не выполняется и бесконечно находимся в цикле
+
+        std::cout << "thread_B working" << std::endl;
+
+        break;
+    }
+}
+
+int main(void) {
+    std::thread t1(thread_A_func);
+    std::thread t2(thread_B_func);
+
+    t1.join();
+    t2.join();
+
+}
+~~~
+___
+Starvation - это любая ситуация, когда параллельный процесс не может получить все ресурсы, необходимые для выполнения его работы  
+В более широком смысле starvation обычно подразумевает наличие одного или нескольких параллельных процессов, которые несправедливо мешают одному или нескольким другим параллельным процессам выполнять работу настолько эффективно, насколько это возможно
+___
+call_once - для единоразового выполнения некоторого фрагмента в потоке
+
+~~~C++
+std::once_flag resource_flag;
+
+void foo()
+{
+    //Если при первом запуске нужно инициализировать указатель некоторым объектом
+    //Но сделать это нужно только один раз
+    std::call_once(resource_flag, []()
+        {
+            resource_ptr.reset(new some_resource);
+        });
+
+    resource_ptr->do_something();
+}
+~~~
+____
+condition_variables
+~~~C++
+#include<mutex>
+#include<thread>
+#include<iostream>
+#include<list>
+
+
+std::mutex mutex;
+std::condition_variable cv; //Условная переменная
+
+int x = 0;
+bool ready = false;
+
+//Генератор данных
+void producer() {
+    std::unique_lock<std::mutex> lock(mutex);   //Создаем гвард для мьютекса 
+                                                //(unique позволяет менее затратно работать с условными переменными)
+
+    for (; x < 100;)
+    {
+        cv.wait(lock, [=] { return !ready; });  //wait - освобождает мьютекс и приостанавливает поток
+                                                //пока не будет получен сигнал от условной переменной из другого потока
+                                                //lock - гвард, с которым работаем
+                                                //[=] - лямбда - принимаем все по значению
+                                                //return !ready - ждем пока ready станет равным false (это значение генерирует consumer)
+        
+        ++x;                //Генерируем данные
+        ready = true;       //Говорим о готовности данных для считывания
+        cv.notify_one();    //Сигнал условной переменной о том, что условие (ready) стало истинным
+                            //Фактически передается в cv.wait consumer
+    }
+}
+
+//Потребитель данных
+void consumer()
+{
+    std::unique_lock<std::mutex> lock(mutex);   //Создаем гвард для мьютекса 
+
+    for (; x < 100;)
+    {
+        cv.wait(lock, [=] { return ready; });   //Ждем пока ready станет true
+
+        std::cout << x << std::endl;
+
+        ready = false;      //Говорим о том, что значение считано
+        cv.notify_one();     //Сигнал условной переменной о том, что условие (ready) стало ложным
+                            //Фактически передается в cv.wait producer
+    }
+}
+
+
+int main(void) {
+    //В процессе выполнения потоки блокируют друг друга
+    std::thread t1(producer);
+    std::thread t2(consumer);
+
+    t1.join();
+    t2.join();
+
+}
+~~~
+___
+semaphore
+~~~C++
+#include<mutex>
+#include<thread>
+#include<iostream>
+#include <semaphore>
+
+std::binary_semaphore smphSignalMainToThread(0), smphSignalThreadToMain(0);
+
+void ThreadProc()
+{
+    smphSignalMainToThread.acquire();   //Уменьшение счетчика на 1
+                                        //Когда счетчик равен нулю, поток блокируется и ждет увеличения счетчика
+                                        //Т.к. состарта счетчик равен нулю, то процесс отсюда продолжится, когда в основном потоке его значение увеличится
+
+    std::cout << "[thread] Got the signal\n"; 
+    std::this_thread::sleep_for(std::chrono::seconds(3)); //Полезная работа
+    std::cout << "[thread] Send the signal\n";
+    
+    smphSignalThreadToMain.release();
+}
+
+int main()
+{
+    std::thread thrWorker(ThreadProc);  //Создаем поток
+    std::cout << "[main] Send the signal\n";
+
+    //Увеличиваем счетчик во втором потоке, чтобы он мог продолжить работу
+    smphSignalMainToThread.release();
+
+    //Уменьшаем счетчик, делая его равным нулю. Продолжение будет, когда второй поток увеличит этот счетчик
+    smphSignalThreadToMain.acquire();
+
+    std::cout << "[main] Got the signal\n";
+    thrWorker.join();
+}
+
+~~~
+___
+future - позволяет ждат получения некоторого значения из потока. После его получения, ожидание прекращается и ожидающий поток продолжает работу
+async - ???
+~~~C++
+#include<thread>
+#include<iostream>
+#include<future>
+
+int do_some_work()
+{
+    return 50;
+}
+
+int main()
+{
+    std::future<int> thread_result = std::async(do_some_work);  //Выполнение останавливается в ожидании результата работы do_some_work
+    std::cout << thread_result.get() << std::endl;
+}
+
+~~~
+___
+promice - Один из способов возврата значения из потока
+~~~C++
+#include<thread>
+#include<iostream>
+#include<future>
+#include <numeric>
+
+
+std::vector<int> numbers = { 1, 2, 3, 4, 5, 6 };
+
+void accumulate(std::vector<int>::iterator first,
+    std::vector<int>::iterator last,
+    std::promise<int> accumulate_promise)
+{
+    //Рассчитываем сумму чисел
+    int sum = std::accumulate(first, last, 0);
+
+    //Записываем в accumulate_promise результат
+    accumulate_promise.set_value(sum);
+
+    //некая полезная работа
+    std::this_thread::sleep_for(std::chrono::seconds(5));
+}
+
+int main()
+{
+    std::promise<int> accumulate_promise;   //Создаем объект типа promice
+    std::future<int> accumulate_future = accumulate_promise.get_future(); //Создаем объект типа future и инициализируем объектом типа promice
+
+    //Создаем поток для функции accumulate, передаем в него вектор и accumulate_promise
+    std::thread work_thread(accumulate, numbers.begin(), numbers.end(), std::move(accumulate_promise));
+
+    //Через объект accumulate_future получаем рассчитанное в функции значение
+    std::cout << "result=" << accumulate_future.get() << '\n';
+    work_thread.join();
+}
+~~~
+___
+std::packaged_task содержит и является поставщиком значения для future
+~~~C++
+#include<thread>
+#include<iostream>
+#include<future>
+
+
+int f(int x, int y) { return std::pow(x, y); }  //Базовая функция, которая должна быть выполнена
+
+
+void task_thread()
+{
+    std::packaged_task<int(int, int)> task(f);  //Пакуем базовую задачу, указывая ее сигнатуру и передавая в конструктор ее название
+    std::future<int> result = task.get_future();    //Создаем объект типа future и считываем значение задачи
+
+    std::thread task_td(std::move(task), 2, 10);    //Запускаем выполнение задачи с данными для расчетов
+    task_td.join();
+
+    std::cout << "task_thread:\t" << result.get() << '\n';  //Выводим результат
+}
+
+int main()
+{
+    task_thread();
+}
+~~~
+
+packaged_task с lambda
+~~~C++
+#include<thread>
+#include<iostream>
+#include<future>
+#include <numeric>
+
+
+void task_lambda()
+{
+    std::packaged_task<int(int, int)> task([](int a, int b)
+        {
+            return std::pow(a, b);
+        });
+
+    std::future<int> result = task.get_future();
+
+    task(2, 9);
+
+    std::cout << "task_lambda:\t" << result.get() << '\n';
+}
+
+int main()
+{
+    task_lambda();
+}
+~~~
+
+packaged_task с bind
+~~~C++
+#include<thread>
+#include<iostream>
+#include<future>
+#include <numeric>
+
+
+int f(int x, int y) { return std::pow(x, y); }  //Базовая функция, которая должна быть выполнена
+
+void task_bind()
+{
+    std::packaged_task<int()> task(std::bind(f, 2, 11));
+    std::future<int> result = task.get_future();
+
+    task();
+
+    std::cout << "task_bind:\t" << result.get() << '\n';
+}
+
+int main()
+{
+    task_bind();
+}
+~~~
