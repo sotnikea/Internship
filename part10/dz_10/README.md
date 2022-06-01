@@ -40,16 +40,16 @@ std::atomic_bool stop;
 	std::mutex mut;
 
 	void tasksThread(); //distribution of tasks by threads
-	void WorkOn();		//associate threads with tasks
-	void Destroy();		//destroy current pool
+	void WorkOn();		  //associate threads with tasks
+	void Destroy();		  //destroy current pool
 
-  	//safe removal of a task from the queue
+  //safe removal of a task from the queue
 	template<typename T>
 	bool  try_pop(T& value);
 ~~~
 И следующие публичные поля:
 ~~~C++
-explicit  SimpleThreadPool(std::size_t threadCount);				//constructor	
+explicit  SimpleThreadPool(std::size_t threadCount);				        //constructor	
 	SimpleThreadPool(const SimpleThreadPool&) = delete;					//disable copy constructor
 	SimpleThreadPool& operator = (const SimpleThreadPool&) = delete;	//prohibit copying by assignment
 
@@ -57,7 +57,7 @@ explicit  SimpleThreadPool(std::size_t threadCount);				//constructor
 	template <typename FunctionType>
 	auto Post(FunctionType f)->std::future<decltype(f())>;
 
-  	//overload function that can take function object with arguments
+  //overload function that can take function object with arguments
 	template<typename T, typename... Args>
 	auto Post(T&& task, Args&& ... args);
 	
@@ -231,7 +231,7 @@ inline auto SimpleThreadPool::Post(T&& task, Args && ...args)
 	return wrapper->get_future();
 }
 ~~~
-Помимо основного функционала реализован ряд сопроводительных методов.
+Помимо основного функционала реализован ряд сопроводительных методов.  
 Метод возвращающий размер пула
 ~~~C++
 //return amount of threads
@@ -253,7 +253,7 @@ void SimpleThreadPool::Resize(std::size_t newSize)
 }
 ~~~
 
-Пример тестового кейса для написанного класс
+Пример тестового кейса для написанного класса
 ~~~C++
 //some work function return int
 int SomeWork() {
@@ -299,6 +299,6 @@ int SomeWork() {
 - Параллельное программирование на С++ в действии. Практика разработки многопоточных программ. Энтони Уильямс(глава 9) https://codernet.ru/books/c_plus/parallelnoe_programmirovanie_na_s_v_dejstvii/
 - Статья про потоки на хабре http://scrutator.me/post/2012/04/04/parallel-world-p1.aspx
 - Livelock, deadlock и starvation https://medium.com/german-gorelkin/deadlocks-livelocks-starvation-ccd22d06f3ae
-- Semaphore https://radioprog.ru/post/1411#:~:text=%D0%A1%D0%B5%D0%BC%D0%B0%D1%84%D0%BE%D1%80%20(semaphore)%20%E2%80%93%20%D0%BF%D1%80%D0%B8%D0%BC%D0%B8%D1%82%D0%B8%D0%B2%20%D1%81%D0%B8%D0%BD%D1%85%D1%80%D0%BE%D0%BD%D0%B8%D0%B7%D0%B0%D1%86%D0%B8%D0%B8,%D0%BD%D1%83%D0%BB%D0%B5%D0%B2%D0%BE%D0%B3%D0%BE%20%D0%B7%D0%BD%D0%B0%D1%87%D0%B5%D0%BD%D0%B8%D1%8F%20%D1%81%D1%87%D1%91%D1%82%D1%87%D0%B8%D0%BA%D0%B0%20%D1%8F%D0%B2%D0%BB%D1%8F%D0%B5%D1%82%D1%81%D1%8F%20%D0%B1%D0%BB%D0%BE%D0%BA%D0%B8%D1%80%D1%83%D1%8E%D1%89%D0%B5%D0%B9.
+- Semaphore [Пример реализации семаформа] (https://radioprog.ru/post/1411#:~:text=%D0%A1%D0%B5%D0%BC%D0%B0%D1%84%D0%BE%D1%80%20(semaphore)%20%E2%80%93%20%D0%BF%D1%80%D0%B8%D0%BC%D0%B8%D1%82%D0%B8%D0%B2%20%D1%81%D0%B8%D0%BD%D1%85%D1%80%D0%BE%D0%BD%D0%B8%D0%B7%D0%B0%D1%86%D0%B8%D0%B8,%D0%BD%D1%83%D0%BB%D0%B5%D0%B2%D0%BE%D0%B3%D0%BE%20%D0%B7%D0%BD%D0%B0%D1%87%D0%B5%D0%BD%D0%B8%D1%8F%20%D1%81%D1%87%D1%91%D1%82%D1%87%D0%B8%D0%BA%D0%B0%20%D1%8F%D0%B2%D0%BB%D1%8F%D0%B5%D1%82%D1%81%D1%8F%20%D0%B1%D0%BB%D0%BE%D0%BA%D0%B8%D1%80%D1%83%D1%8E%D1%89%D0%B5%D0%B9)
 - Thread example on habr https://habr.com/ru/post/656515/
 
