@@ -1,4 +1,4 @@
-# 11. Cryptography + Blockchain
+# Cryptography + Blockchain
 ## Оглавление
 1. [General blockchain info](#r1)
 2. [Ethereum history](#r2)
