@@ -1,4 +1,4 @@
-# 9. Разработка под Linux
+# 11. Cryptography + Blockchain
 ## Оглавление
 1. [General blockchain info](#r1)
 2. [Ethereum history](#r2)
