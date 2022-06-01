@@ -33,11 +33,12 @@
     - [scoped_lock для решения проблемы Deadlock](#e13)
     - [Livelock и try_to_lock](#e14)
     - [Starvation](#e15)
-    - [condition_variables](#e16)
-    - [semaphore](#e17)
-    - [future](#e18)
-    - [promice](#e19)
-    - [std::packaged_task](#e20)
+    - [call_once](#e16)
+    - [condition_variables](#e17)
+    - [semaphore](#e18)
+    - [future](#e19)
+    - [promice](#e20)
+    - [std::packaged_task](#e21)
 
 
         
@@ -190,7 +191,7 @@ void Consumer() {
 
 ## <a name="r8">Примеры</a>
 ___
-## <a name="e1">Создание треда и **join**</a>
+### <a name="e1">Создание треда и **join**</a>
 ~~~C++
 #include <iostream>
 #include <thread>
@@ -223,7 +224,7 @@ task finished
 Main thread ended
 ~~~
 ___
-## <a name="e2">**detach**</a>
+### <a name="e2">**detach**</a>
 ~~~C++
 #include <iostream>
 #include <thread>
@@ -251,7 +252,7 @@ int main()
 }
 ~~~
 ___
-## <a name="e3">Потеря в потоке связи с объектом из-за его удаления</a>
+### <a name="e3">Потеря в потоке связи с объектом из-за его удаления</a>
 ~~~C++
 #include <iostream>
 #include <thread>
@@ -288,7 +289,7 @@ int main()
 
 ~~~
 ___
-## <a name="e4">Падение программы в случае исключения отработанного до join или detach</a>
+### <a name="e4">Падение программы в случае исключения отработанного до join или detach</a>
 ~~~C++
 #include <thread>
 #include <iostream>
@@ -336,7 +337,7 @@ int main()
 }
 ~~~
 ___
-## <a name="e5">Два потока работающие с одним и тем же значением</a>
+### <a name="e5">Два потока работающие с одним и тем же значением</a>
 
 ~~~C++
 #include <iostream>
@@ -382,7 +383,7 @@ int main()
 6 
 ~~~
 ___
-## <a name="e6">Передача одной и той же фунции с разными аргументами в разные потоки</a>
+### <a name="e6">Передача одной и той же фунции с разными аргументами в разные потоки</a>
 
 ~~~C++
 #include <iostream>
@@ -415,7 +416,7 @@ int main()
 
 ~~~
 ___
-## <a name="e7">Race condition и Data race</a>
+### <a name="e7">Race condition и Data race</a>
 
 Race condition - Когда результат программи зависит от того, в каком порядке будет выполняться поток
 Data race - Когда несколько потоков пытаются использовать общие данные
@@ -438,7 +439,7 @@ void add_to_list(int new_value)
 }
 ~~~
 ___
-## <a name="e8">mutex для синхронизации при работе с общей функцией</a>
+### <a name="e8">mutex для синхронизации при работе с общей функцией</a>
 
 
 ~~~C++
@@ -479,7 +480,7 @@ int main()
 }
 ~~~
 ___
-## <a name="e9">lock_guard вместо unlock для mutex</a>
+### <a name="e9">lock_guard вместо unlock для mutex</a>
 
 ~~~C++
 #include <iostream>
@@ -516,7 +517,7 @@ int main()
 }
 ~~~
 ___
-## <a name="e10">shared_lock</a>
+### <a name="e10">shared_lock</a>
 shared_lock - позволяет читать данные нескольким потокам использующим общий мьютекс, а менять данные только одному, использующему тот же общий мьютекс
 
 ~~~C++
@@ -580,7 +581,7 @@ int main()
 }
 ~~~
 ___
-## <a name="e11">Deadlock</a>
+### <a name="e11">Deadlock</a>
 Deadlock - Ситуация, когда один поток захватывает мьютекс, который нужен другому потоку. А другой поток захватывает мьютекс, который нужен этому потоку. Как результат, они взаимно блокируют друг друга
 
 ~~~C++
@@ -630,7 +631,7 @@ int main(void) {
 }
 ~~~
 ___
-## <a name="e12">Deadlock в классе</a>
+### <a name="e12">Deadlock в классе</a>
 
 ~~~C++
 #include<mutex>
@@ -698,7 +699,7 @@ int main(void) {
 
 ~~~
 ___
-## <a name="e13">scoped_lock для решения проблемы Deadlock</a>
+### <a name="e13">scoped_lock для решения проблемы Deadlock</a>
 scoped_lock для решения проблемы Deadlock
 scoped_lock захватывает мьютексы в определенной последовательности
 
@@ -766,7 +767,7 @@ int main(void) {
 
 ~~~
 ___
-## <a name="e14">Livelock и try_to_lock</a>
+### <a name="e14">Livelock и try_to_lock</a>
 
 Livelock то же что и Deadlock. Отличие в том, что при Deadlock оба заблокированных друг другом потока бесконечно ждут своей очереди на выполнение. А в Livelock бесконечно перезапускается цикл у обоих потоков, пытающийся захватить ресурс и терпящий неудачу  
 Livelock- это программы, которые активно выполняют параллельные операции, но эти операции никак не влияют на продвижение состояния программы вперед
@@ -827,11 +828,11 @@ int main(void) {
 }
 ~~~
 ___
-## <a name="e15">Starvation</a>
+### <a name="e15">Starvation</a>
 Starvation - это любая ситуация, когда параллельный процесс не может получить все ресурсы, необходимые для выполнения его работы  
 В более широком смысле starvation обычно подразумевает наличие одного или нескольких параллельных процессов, которые несправедливо мешают одному или нескольким другим параллельным процессам выполнять работу настолько эффективно, насколько это возможно
 ___
-## <a name="e1"></a>
+### <a name="e16">call_once</a>
 call_once - для единоразового выполнения некоторого фрагмента в потоке
 
 ~~~C++
@@ -850,7 +851,7 @@ void foo()
 }
 ~~~
 ____
-## <a name="e16">condition_variables</a>
+### <a name="e17">condition_variables</a>
 
 ~~~C++
 #include<mutex>
@@ -914,7 +915,7 @@ int main(void) {
 }
 ~~~
 ___
-## <a name="e17">semaphore</a>
+### <a name="e18">semaphore</a>
 
 ~~~C++
 #include<mutex>
@@ -954,7 +955,7 @@ int main()
 
 ~~~
 ___
-## <a name="e18">future</a>
+### <a name="e19">future</a>
 future - позволяет ждат получения некоторого значения из потока. После его получения, ожидание прекращается и ожидающий поток продолжает работу
 async - ???
 ~~~C++
@@ -975,7 +976,7 @@ int main()
 
 ~~~
 ___
-## <a name="e19">promice</a>
+### <a name="e20">promice</a>
 promice - Один из способов возврата значения из потока
 ~~~C++
 #include<thread>
@@ -1014,7 +1015,7 @@ int main()
 }
 ~~~
 ___
-## <a name="e20">std::packaged_task</a>
+### <a name="e21">std::packaged_task</a>
 std::packaged_task содержит и является поставщиком значения для future
 ~~~C++
 #include<thread>
