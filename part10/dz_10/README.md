@@ -43,7 +43,7 @@ std::atomic_bool stop;
 	void WorkOn();		//associate threads with tasks
 	void Destroy();		//destroy current pool
 
-  //safe removal of a task from the queue
+  	//safe removal of a task from the queue
 	template<typename T>
 	bool  try_pop(T& value);
 ~~~
@@ -57,7 +57,7 @@ explicit  SimpleThreadPool(std::size_t threadCount);				//constructor
 	template <typename FunctionType>
 	auto Post(FunctionType f)->std::future<decltype(f())>;
 
-  //overload function that can take function object with arguments
+  	//overload function that can take function object with arguments
 	template<typename T, typename... Args>
 	auto Post(T&& task, Args&& ... args);
 	
