@@ -47,7 +47,7 @@ Ethereum was initially described in a white paper by Vitalik Buterin, a programm
 ## <a name="r6">Transactions</a>
 Каждый вызов функции смарт-контракта является транзакцией. Это означает что при любой ошибке или при возникновении исключения внутри функции - состояние смарт контракта не изменится. Ошибочный вызов не будет иметь никакого эффекта. Результаты вызова сохранятся только если функция завершится успешно.
 Например, рассмотрим смарт-контракт с одной функцией:
-~~~C++
+~~~Solidity
 contract Dummy {
   uint myValue = 10;
   function setValue(uint newValue) public {
