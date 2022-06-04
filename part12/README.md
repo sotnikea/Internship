@@ -1,5 +1,4 @@
-
-# Межпроцессное взаимодействие
+# Тема
 ## Оглавление
 1. [File (Файл)](#r1)
 2. [Pipe (Пайп)](#r2)
@@ -8,6 +7,15 @@
 5. [Semaphore/Mutex (Семафор/М’ютекс)](#r5)
 6. [Socket/Unix Socket/Windows Named Pipe](#r6)
 7. [High Level Approach](#r7)
+8. [Приклади](#r8)
+    - [Приклад використання **pipe** (процес 1)](#r8_1)
+    - [Приклад використання **pipe** (Процес 2, POSIX)](#r8_2)
+    - [Приклад використання **pipe** в терміналі](#r8_3)
+    - [Приклад використання Shared Memory (Windows)](#r8_4)
+    - [Приклад RPC](#r8_5)
+    
+
+
 
 **Міжпроцесна взаємодія** – це обмін даними між потоками одного чи декількох процесів. Реалізується за допомогою механізмів, що їх надає ядро ОС. Може відбуватись як в межах одного комп’ютера, так і між різними комп’ютерами.
 
@@ -62,3 +70,124 @@
 Ідея виклику віддалених процедур полягає в поширенні добре відомого та зрозумілого механізму передачі управління і даних всередині програми на передачу управління та даних через мережу. Найбільша ефективність використання RPC може бути досягнена в тих додатках, в яких існує інтерактивний зв’язок між віддаленими компонентами з невеликим часом відповіді та відносно малою кількістю даних, що передаються. 
 
 ![pic1](https://github.com/sotnikea/Apriorit/raw/main/part12/img/pic1.png)
+
+## <a name="r8">Приклади</a>
+### <a name="r8_1">Приклад використання **pipe** (процес 1)</a>
+
+~~~C++
+#include <iostream>
+int main()
+{
+    std::cout<<"Hello, world!";
+    return 0;
+}
+~~~
+____
+### <a name="r8_2">Приклад використання **pipe** (Процес 2, POSIX)</a>
+~~~C++
+int ExecuteCommandAndReadOutput(const char *pCommand, 
+                                std::string * pTextResult)
+{
+    pTextResult->clear();
+    char buffer[512];
+    FILE* pipe = popen(pCommand, "r"); // у Windows існує _popen
+    if (!pipe)
+        throw std::runtime_error("Can’t execute command");
+    while (!feof(pipe))
+    {
+        if (fgets(buffer, sizeof(buffer), pipe))
+                pTextResult->append(buffer);
+    }
+    return pclose(pipe);
+}
+~~~
+
+### <a name="r8_3">Приклад використання **pipe** в терміналі</a>
+~~~
+Windows:	
+>dir | find "Downloads"
+
+POSIX:	
+>ls | grep 'something'
+~~~
+
+### <a name="r8_4">Приклад використання Shared Memory (Windows)</a>
+~~~
+#pragma comment(linker, "/SECTION:.shared,RWS")
+#pragma data_seg(".shared")
+int g_iShared = 0;  // розділювана змінна
+#pragma data_seg()
+~~~
+
+### <a name="r8_5">Приклад RPC</a>
+~~~C++
+// 1. Маємо сервер і деякий алгоритм
+int SomeFunction(int arg1,
+                const std::string & arg2, 
+                double arg3)
+{       
+         // …. Супер алгоритм
+}
+
+// 2. Клієнт хоче його використовувати таким чином 
+int x = SomeFunction(arg1,  arg2, arg3);
+std::cout<<x;
+
+// Client Stub Sample
+int SomeFunction(Connection & connection,
+                int arg1,
+                const std::string & arg2, 
+                double arg3){       // зберігаємо
+        SomeArchive inputArchive;
+        inputArchive.Pack("function-name", "SomeFunction");
+        inputArchive.Pack("arg1", arg1);
+        inputArchive.Pack("arg2", arg2);
+        inputArchive.Pack("arg3", arg3);
+        // отримуємо буфер
+        std::vector<char> buffer;
+        inputArchive.Serialize(&buffer);
+        // відправляємо буфер
+        std::vector<char> outputBuffer;
+        connection.Send(buffer, &outputBuffer);
+        // парсимо результат
+        SomeArchive outputArchive(outputBuffer);
+        return  outputArchive.QueryInt("result");
+}
+
+// Server Code Sample
+void ServerCodeSample(Connection & connection)
+{       
+        std::vector<int> buffer;
+        while(connection.ReadPacket(&buffer))
+        {
+                SomeArchive archive(buffer);
+                SomeArchive outputArchive;
+                // аналізуємо пакет
+                std::string functionName = archive.QueryString("function-name");
+                if (functionName == "SomeFunction")
+                {
+                        ServerStub_SomeFunction(archive, &outputArchive);
+                }
+                // відправляємо результат
+                std::vector<char> outputBuffer;
+                outputArchive.Serialize(&outputBuffer);
+                connection.SendAnswer(outputBuffer);
+        }
+}
+
+void ServerStub_SomeFunction(SomeArchive & archive, 
+                            SomeArchive & outputArchive)
+{
+        // читаємо параметри
+        int arg1 = archive.QueryInit("arg1");
+        std::string arg2 = archive.QueryString("arg2");
+        double arg3 = archive.QueryDouble("arg3");
+
+        // викликаємо оригінальну функцію
+        int result = SomeFunction(arg1, arg2, arg3);
+
+        // зберігаємо результат
+        outputArchive.Pack("result", result);
+}
+~~~
+
