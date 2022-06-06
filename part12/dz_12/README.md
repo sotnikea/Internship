@@ -167,7 +167,7 @@ Download boost - https://www.boost.org/users/download/#live
 Пример сервера из документации boost - https://www.boost.org/doc/libs/1_79_0/doc/html/boost_asio/example/cpp11/echo/blocking_tcp_echo_server.cpp  
 Пример клиента из документации boost - https://www.boost.org/doc/libs/1_79_0/doc/html/boost_asio/example/cpp11/echo/blocking_tcp_echo_client.cpp  
 
-Разворачивание библиотеки boost - https://ru.stackoverflow.com/questions/368975/%D0%9A%D0%B0%D0%BA-%D1%83%D1%81%D1%82%D0%B0%D0%BD%D0%BE%D0%B2%D0%B8%D1%82%D1%8C-%D0%B1%D0%B8%D0%B1%D0%BB%D0%B8%D0%BE%D1%82%D0%B5%D0%BA%D1%83-boost  
+Разворачивание библиотеки boost - [Ссылка](https://ru.stackoverflow.com/questions/368975/%D0%9A%D0%B0%D0%BA-%D1%83%D1%81%D1%82%D0%B0%D0%BD%D0%BE%D0%B2%D0%B8%D1%82%D1%8C-%D0%B1%D0%B8%D0%B1%D0%BB%D0%B8%D0%BE%D1%82%D0%B5%D0%BA%D1%83-boost)  
 Компиляция и установка boost - http://kaktusenok.blogspot.com/2013/08/boost-visual-studio.html  
 Networking in C++ Part #1: MMO Client/Server, ASIO & Framework Basics - https://www.youtube.com/watch?v=2hNdkYInj4g  
 TCP Client Server Application | C++ in 2021 - https://www.youtube.com/watch?v=DVMHEDhYEr4  
