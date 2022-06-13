@@ -50,4 +50,5 @@
     + Конспект
 17. Основы reversing engineering
     + Конспект
-    + Дз.
+    + [Дз 17_1. Implement serial number generator for exe](part17/dz_17/)
+    + [Дз 17_2. Find serial number, which will have definite MD5 hash](part17/dz_17/)
