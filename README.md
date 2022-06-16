@@ -48,7 +48,7 @@
 15. Архитектура Windows NT. Часть 1. (OS)
     + [Конспект](part15/)
 16. Архитектура Windows NT. Часть 2. (Драйвера)
-    + Конспект
+    + [Конспект](part16/)
 17. Основы reversing engineering
     + Конспект
     + [Дз 17_1. Implement serial number generator for exe](part17/dz_17/)
