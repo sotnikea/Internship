@@ -251,7 +251,7 @@ TEST(GetProductsAmountTest, TwoProductsWithLowerPriceOrOneMoreExpensive) {
 Запуск тестов показывает, что все они проходят успешно:  
 ![image_10](https://github.com/sotnikea/Internship_Apriorit/raw/main/part5/dz_5/img/pic10.png)
 
-*Задание 2*
+*Задание 2*  
 TDD или разработка через тестирование, предполагает фактически написание теста, который должна выполнять функция, но функционал для этого теста еще не реализован. В последствии функционал реализуется и формируется новый тест. Попробуем выполнить это условие.  
 
 Начнем с условия: "on every year that is evenly divisible by 4". Напишем для этого тест:
