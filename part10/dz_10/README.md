@@ -295,6 +295,10 @@ int SomeWork() {
 	}
 ~~~
 
+# Оценка результата
+80 из 100  
+[Ошибки в реализации и внесенные исправления](dz_10_new/)
+
 # Ссылки
 - Параллельное программирование на С++ в действии. Практика разработки многопоточных программ. Энтони Уильямс(глава 9) https://codernet.ru/books/c_plus/parallelnoe_programmirovanie_na_s_v_dejstvii/
 - Статья про потоки на хабре http://scrutator.me/post/2012/04/04/parallel-world-p1.aspx
