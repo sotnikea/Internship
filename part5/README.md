@@ -8,6 +8,7 @@
 6. [Когда писать тесты](#r6)
 7. [Польза юнит тестов](#r7)
 8. [Недостатки](#r8)
+9. [Примеры и комментарии после проверки домашнего задания](#r9)
 __________________
 
 ## <a name="r1">Модульное тестирование</a>  
@@ -59,3 +60,59 @@ Gtest (googletest) – популярный фреймворк для юнит �
 - не все можно протестировать (по крайней мере сразу)
 - пишутся теми же, кто пишет тестируемый код
 - тесты тоже нуждаются в сопровождении
+
+## <a name="r9">Примеры и комментарии после проверки домашнего задания</a>
+~~~C++
+TEST(...)
+{
+    std::vector<int> arr = {11, 22};  // представьте что здесь вызов чего-то типо ReadPricesFromDb()
+    ASSERT_EQ(arr.size(), 3);         // если бы здесь стоял EXCEPT
+    EXPECT_EQ(arr[0], 11);            // то эта строчка бы выполнилась
+    EXPECT_EQ(arr[1], 22);            // эта тоже выполнилась
+    EXPECT_EQ(arr[2], 33);            //  а здесь вылетело бы исключение
+}
+
+TEST(...)                                          // и этот тест бы не выполнился
+TEST(...)                                          // (этот тоже)
+~~~
+
+Так краще не робити, бо як потім зрозуміти який тест сфейлився
+
+~~~C++
+std::vector<std::pair<size_t, size_t>> cases_GetProductsAmount = {
+    {GetProductsAmount(std::vector<int>(0), 10), 0},
+    {GetProductsAmount(std::vector<int>(0), 0), 0},
+    {GetProductsAmount(std::vector<int>(5, 1), 0), 0},
+    {GetProductsAmount(std::vector<int>(5, 1), 10), 5},
+    {GetProductsAmount(std::vector<int>(5, 1), 2), 2},
+    {GetProductsAmount(std::vector<int>(0), -10), 0},
+    {GetProductsAmount(std::vector<int>(5, 1), -10), 0}
+};
+
+TEST(Products, getProductsAmount_LimitValues)
+{
+    for(auto &c : cases_GetProductsAmount)    
+        EXPECT_EQ(c.first, c.second);        
+}
+~~~
+
+Якщо дуже хочеться, то можете юзати таку штуку:
+~~~C++
+using TestData = std::tuple<std::vector<int>, int, size_t>;
+class GetProductsAmountTest : public testing::TestWithParam<TestData> {};
+INSTANTIATE_TEST_SUITE_P(PricesAmounts, GetProductsAmountTest, testing::Values(
+    TestData{ {}, 10, 0 },
+    TestData{ {}, 0, 0 },
+    TestData{ {1, 1, 1, 1, 1}, 0, 0 },
+    TestData{ {1, 1, 1, 1, 1}, 10, 5 },
+    TestData{ {1, 1, 1, 1, 1}, 2, 2},
+    TestData{ {}, -10, 0},
+    TestData{ {1, 1, 1, 1, 1}, -10, 0}
+));
+
+TEST_P(GetProductsAmountTest, Acceptance)
+{
+    auto [prices, money, amount] = GetParam();
+    EXPECT_EQ(GetProductsAmount(prices, money), amount);
+}
+~~~
