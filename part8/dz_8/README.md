@@ -235,6 +235,10 @@ for p in listsOfPlace{
 }
 ~~~
 
+# Оценка результата
+90 балов из 100  
+Оценка не содержала фидбек с описанием возможных ошибок
+
 # Ссылки
 - Ортодромия: https://ru.wikipedia.org/wiki/%D0%9E%D1%80%D1%82%D0%BE%D0%B4%D1%80%D0%BE%D0%BC%D0%B8%D1%8F
 - Формула гаверсинусов: https://www.kobzarev.com/programming/calculation-of-distances-between-cities-on-their-coordinates/
