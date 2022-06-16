@@ -17,22 +17,22 @@
 # Огляд реалізації
 Для початку необхідно інсталювати boost. Завантажуємо останню версію бібліотеки за посиланням https://www.boost.org/users/download/#live, розпаковуємо та зберігаємо деінде на комп'ютері  
 Створюємо проект в VisualStudio та відкриваємо термінал **View -> Terminal**  
-![pic1](https://github.com/sotnikea/Apriorit/raw/main/part12/dz_12/img/pic1.png)   
+![pic1](https://github.com/sotnikea/Internship_Apriorit/raw/main/part12/dz_12/img/pic1.png)   
 
 В терміналі вказуємо шлях до теки з boost, наприклад  
-![pic2](https://github.com/sotnikea/Apriorit/raw/main/part12/dz_12/img/pic2.png)    
+![pic2](https://github.com/sotnikea/Internship_Apriorit/raw/main/part12/dz_12/img/pic2.png)    
 
 Та даємо команду на компілювання **.\bootstrap.bat**  
 Після чого вводимо команду **.\b2**  
 Побудова триває близько 10 хвилин. 
 По завершенню в налаштуваннях проекту   
-![pic3](https://github.com/sotnikea/Apriorit/raw/main/part12/dz_12/img/pic3.png)  
+![pic3](https://github.com/sotnikea/Internship_Apriorit/raw/main/part12/dz_12/img/pic3.png)  
 
 Вказуємо шлях до завантаженного boost:  
-![pic4](https://github.com/sotnikea/Apriorit/raw/main/part12/dz_12/img/pic4.png)  
+![pic4](https://github.com/sotnikea/Internship_Apriorit/raw/main/part12/dz_12/img/pic4.png)  
 
 А також шлях до його бібліотек  
-![pic5](https://github.com/sotnikea/Apriorit/raw/main/part12/dz_12/img/pic5.png)  
+![pic5](https://github.com/sotnikea/Internship_Apriorit/raw/main/part12/dz_12/img/pic5.png)  
 
 З використанням boost створено два проекти - сервер, що здатен приймати та зберігати файл. Так клієнт, що під'єднується до серверу та відсилає йому цей файл.  
 Перевіримо роботу додатків на трьох файлах, розміщених за адресою: E:\PROJECTS\c++\Some data
@@ -74,7 +74,7 @@ E:\PROJECTS\c++\MyClient\Debug>.\MyClient.exe E:\PROJECTS\c++\Some data\text.txt
 ~~~
 
 Наступним етапом додаток запропонує вказати IP за яким працює сервер, та порт, який він прослуховує. Дізнатись ip можна за допомогою консолі та команди ipconfig  
-![pic6](https://github.com/sotnikea/Apriorit/raw/main/part12/dz_12/img/pic6.png) 
+![pic6](https://github.com/sotnikea/Internship_Apriorit/raw/main/part12/dz_12/img/pic6.png) 
 
 Вказуємо необхідні IP та порт:
 ~~~
@@ -157,10 +157,14 @@ Received: 91.47 Mb
 Як і в попередніх випадках розмір файлів, їх назва, розширення та вміст до відправки та після повністю співпадають.
 
 Тека, з якох проводилось копіювання:  
-![pic7](https://github.com/sotnikea/Apriorit/raw/main/part12/dz_12/img/pic7.png) 
+![pic7](https://github.com/sotnikea/Internship_Apriorit/raw/main/part12/dz_12/img/pic7.png) 
 
 Та тека з додатком-сервером, та результатами прийому файлів:  
-![pic8](https://github.com/sotnikea/Apriorit/raw/main/part12/dz_12/img/pic8.png) 
+![pic8](https://github.com/sotnikea/Internship_Apriorit/raw/main/part12/dz_12/img/pic8.png) 
+
+# Оцінка результату
+80 із 100  
+[Ошибки в реализации и внесенные исправления](dz_12_new/)
 
 # Посилання
 Download boost - https://www.boost.org/users/download/#live  
