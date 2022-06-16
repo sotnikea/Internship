@@ -50,6 +50,6 @@
 16. Архитектура Windows NT. Часть 2. (Драйвера)
     + [Конспект](part16/)
 17. Основы reversing engineering
-    + Конспект
+    + [Конспект](part17/)
     + [Дз 17_1. Implement serial number generator for exe](part17/dz_17/)
     + [Дз 17_2. Find serial number, which will have definite MD5 hash](part17/dz_17/)
