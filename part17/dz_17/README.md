@@ -14,52 +14,52 @@ Archive `rev.task.7z`, attached to the assignment (archive password: rev).
 # Solution overview
 *Task 1*   
 Устанавливаем [IDA Pro](https://www.hex-rays.com/ida-pro/), распаковываем приложенный архив и перетаскиваем в него распакованную программу.   
-![pic_1](https://github.com/sotnikea/Internship_Apriorit/raw/main/part17/dz_17/img/pic1.png)   
+![pic_1](https://github.com/sotnikea/Internship_2022/raw/main/part17/dz_17/img/pic1.png)   
 
 Нас интересует вызов диалогового окна с вводом серийного ключа и его проверкой. Поэтому устанавливаем курсор в строку вызова окна DialogBoxParamA и нажимаем пробел   
-![pic_2](https://github.com/sotnikea/Internship_Apriorit/raw/main/part17/dz_17/img/pic2.png)   
+![pic_2](https://github.com/sotnikea/Internship_2022/raw/main/part17/dz_17/img/pic2.png)   
 
 Сразу после фрагмента с вызовом диалогового окна находится функция, описывающая этот процесс. Выделяем в ней любой адрес и снова жмем пробел, чтобы открыть структуру   
-![pic_3](https://github.com/sotnikea/Internship_Apriorit/raw/main/part17/dz_17/img/pic3.png)   
+![pic_3](https://github.com/sotnikea/Internship_2022/raw/main/part17/dz_17/img/pic3.png)   
 
 Находим фрагмент, где явно выводится результат проверки серийного номера   
-![pic_4](https://github.com/sotnikea/Internship_Apriorit/raw/main/part17/dz_17/img/pic4.png)
+![pic_4](https://github.com/sotnikea/Internship_2022/raw/main/part17/dz_17/img/pic4.png)
 
 Видим, что в узле выше производится некоторая проверка, которая и приводит к выводу информации о правильности серийного ключа:  
-![pic_5](https://github.com/sotnikea/Internship_Apriorit/raw/main/part17/dz_17/img/pic5.png) 
+![pic_5](https://github.com/sotnikea/Internship_2022/raw/main/part17/dz_17/img/pic5.png) 
 
 Еще выше находится проверка равенства некоторого значения шести. Неуспешность данной проверки напрямую влияет на результат оценки серийного ключа.   
-![pic_6](https://github.com/sotnikea/Internship_Apriorit/raw/main/part17/dz_17/img/pic6.png) 
+![pic_6](https://github.com/sotnikea/Internship_2022/raw/main/part17/dz_17/img/pic6.png) 
 
 Устанавливаем в строке со сравнением breakpoint с помощью кнопки **F2** и запускаем отладку  
-![pic_7](https://github.com/sotnikea/Internship_Apriorit/raw/main/part17/dz_17/img/pic7.png)
+![pic_7](https://github.com/sotnikea/Internship_2022/raw/main/part17/dz_17/img/pic7.png)
 
 Вводим какое-нибудь проверочное число, например `123` и после остановки отладки в точке breakpoint наводим мышку на сравниваемое с шестеркой значение.  
-![pic_8](https://github.com/sotnikea/Internship_Apriorit/raw/main/part17/dz_17/img/pic8.png) 
+![pic_8](https://github.com/sotnikea/Internship_2022/raw/main/part17/dz_17/img/pic8.png) 
 
 Как видим, в значении для сравнения находится тройка. Разумным будет предположить, что это количество цифр, введенных в качестве серийного ключа. Пробуем перезапустить программу введя число с шестью цифрами, например `123456`, видим, что данная проверка проходит успешно. Но все так же не проходит проверка в следующем узле. При более детальном изучении, видим, что этот узел вызывает некоторую функцию возвращающую bool значение. Если функция возвращает true, то серийный код верен.  
-![pic_9](https://github.com/sotnikea/Internship_Apriorit/raw/main/part17/dz_17/img/pic9.png) 
+![pic_9](https://github.com/sotnikea/Internship_2022/raw/main/part17/dz_17/img/pic9.png) 
 
 Снимаем предыдущий breakpoint и устанавливаем новый в строку с вызовом функции. Запускаем отладку и на вызове функции нажимаем **F7**, чтобы увидеть её. Далее, нажимая **F7** для пошагового выполнения отладки, видим, что часть узлов выполняются в цикле  
-![pic_10](https://github.com/sotnikea/Internship_Apriorit/raw/main/part17/dz_17/img/pic10.png)
+![pic_10](https://github.com/sotnikea/Internship_2022/raw/main/part17/dz_17/img/pic10.png)
 
 Изучим более внимательно, что происходит внутри цикла. Первая операция, которая нас интересует это копирование (`mov`)  
-![pic_11](https://github.com/sotnikea/Internship_Apriorit/raw/main/part17/dz_17/img/pic11.png)
+![pic_11](https://github.com/sotnikea/Internship_2022/raw/main/part17/dz_17/img/pic11.png)
 
 Как видим, в `al`, копируется `esi` с индексом `eax`. Т.е. в данном случае нулевой символ введенного нами серийного ключа был скопирован. В результате `al` содержит в себе `31`, что является шестнадцатиричным представлением нулевого символа введенного нами числа (т.е. "1"):  
-![pic_12](https://github.com/sotnikea/Internship_Apriorit/raw/main/part17/dz_17/img/pic12.png) 
+![pic_12](https://github.com/sotnikea/Internship_2022/raw/main/part17/dz_17/img/pic12.png) 
 
 Далее выполняется операция добавления (`add`) десяти к предыдущему значению. Как результат, имеем в `al` значение `41`  
-![pic_13](https://github.com/sotnikea/Internship_Apriorit/raw/main/part17/dz_17/img/pic13.png) 
+![pic_13](https://github.com/sotnikea/Internship_2022/raw/main/part17/dz_17/img/pic13.png) 
 
 Далее к полученному значению, добавляется текущий индекс элемента. В данном случае он равен 0, т.к. обрабатывается нулевой элемент переданного серийного кода:  
-![pic_14](https://github.com/sotnikea/Internship_Apriorit/raw/main/part17/dz_17/img/pic14.png) 
+![pic_14](https://github.com/sotnikea/Internship_2022/raw/main/part17/dz_17/img/pic14.png) 
 
 Далее выполняется некоторая операция добавления, которая не очевидна на текущей итерации, поскольку никак не изменяет полученный ранее результат  
-![pic_15](https://github.com/sotnikea/Internship_Apriorit/raw/main/part17/dz_17/img/pic15.png) 
+![pic_15](https://github.com/sotnikea/Internship_2022/raw/main/part17/dz_17/img/pic15.png) 
 
 И последняя операция, это инкрементирование индекса, фактически переход к следующему символу введенного серийного ключа.  
-![pic_16](https://github.com/sotnikea/Internship_Apriorit/raw/main/part17/dz_17/img/pic16.png) 
+![pic_16](https://github.com/sotnikea/Internship_2022/raw/main/part17/dz_17/img/pic16.png) 
 
 Пройдем еще одну итерацию, до операции с неочевидным результатом. Нетрудно посчитать, что для следующей итерации при обработке символа "2" справедлив следующий расчет, согласно рассмотренного алгоритма:
 ~~~
@@ -67,23 +67,23 @@ Archive `rev.task.7z`, attached to the assignment (archive password: rev).
 32 + 10 + 1(измененный индекс) = 43
 ~~~
 И действительно, видим это значение одним из операндов рассматриваемой операции  
-![pic_17](https://github.com/sotnikea/Internship_Apriorit/raw/main/part17/dz_17/img/pic17.png) 
+![pic_17](https://github.com/sotnikea/Internship_2022/raw/main/part17/dz_17/img/pic17.png) 
 
 Тогда как вторым операндом оказывается результат предыдущей операции  
-![pic_18](https://github.com/sotnikea/Internship_Apriorit/raw/main/part17/dz_17/img/pic18.png) 
+![pic_18](https://github.com/sotnikea/Internship_2022/raw/main/part17/dz_17/img/pic18.png) 
 
 Таким образом можно прийти к выводу, что введенной серийный ключ преобразуется в некоторое значение по следующему алгоритму:
 
 >sum<sub>i</sub> = digit<sub>i</sub> + 10 + i + sum<sub>i-1</sub>
 
 Далее видим, что полученное значение сравнивается с числом `0x2F2`, что в десятичной системе соответствует числу `754`  
-![pic_19](https://github.com/sotnikea/Internship_Apriorit/raw/main/part17/dz_17/img/pic19.png) 
+![pic_19](https://github.com/sotnikea/Internship_2022/raw/main/part17/dz_17/img/pic19.png) 
 
 Следующим узлом производится проверка суммы 0 и 5 символа значению `0xDE`, что в десятичной системе соответствует `222`. К слову, отсутствие второго выхода из данного узла скорее всего говорит о том, что в случае неуспешности данной проверки, программа не выведет никакого результата.   
-![pic_20](https://github.com/sotnikea/Internship_Apriorit/raw/main/part17/dz_17/img/pic20.png) 
+![pic_20](https://github.com/sotnikea/Internship_2022/raw/main/part17/dz_17/img/pic20.png) 
 
 И наконец последняя проверка сравнивает сумму 2 и 3 символа значению `0xD4`, что в десятичной системе соответствует `212`  
-![pic_21](https://github.com/sotnikea/Internship_Apriorit/raw/main/part17/dz_17/img/pic21.png) 
+![pic_21](https://github.com/sotnikea/Internship_2022/raw/main/part17/dz_17/img/pic21.png) 
 
 Сложив вместе рассмотренные условия, получаем следующие ограничения:
 ~~~
@@ -188,11 +188,11 @@ int main()
 		PrintCode();
 }
 ~~~
-![pic_22](https://github.com/sotnikea/Internship_Apriorit/raw/main/part17/dz_17/img/pic22.png) 
+![pic_22](https://github.com/sotnikea/Internship_2022/raw/main/part17/dz_17/img/pic22.png) 
 
 Как показывает проверка, каждый из ключей подходят  
-![pic_23](https://github.com/sotnikea/Internship_Apriorit/raw/main/part17/dz_17/img/pic23.png)   
-![pic_24](https://github.com/sotnikea/Internship_Apriorit/raw/main/part17/dz_17/img/pic24.png) 
+![pic_23](https://github.com/sotnikea/Internship_2022/raw/main/part17/dz_17/img/pic23.png)   
+![pic_24](https://github.com/sotnikea/Internship_2022/raw/main/part17/dz_17/img/pic24.png) 
 
 *Task 2*  
 Чтобы выполнить данное задание, необходимо преобразовывать каждый ключ в [MD5](https://ru.wikipedia.org/wiki/MD5) хэш и сравнить его с заданным хэшем. Для преобразования строки с серийным ключом был найден и использован данный исходный код: http://www.zedwood.com/article/cpp-md5-function  
