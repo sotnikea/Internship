@@ -40,90 +40,90 @@
 
 Для вызова функций смарт-контрактов из тестовой сети, в *Remix*, на вкладке *run* можно выбрать нужный контракт из выпадающего списка и вместо **deploy** - выбрать пункт **at address**, предварительно указав адрес в соседнем поле. (**Note**: Новый интерфейс отличается визуально, но поля такие же)  
 
-![pic_11_1](https://github.com/sotnikea/Internship_Apriorit/raw/main/part11/dz_11/img/pic_11_1.png)  
+![pic_11_1](https://github.com/sotnikea/Internship_2022/raw/main/part11/dz_11/img/pic_11_1.png)  
 
 # Обзор решения
 ### Тестирование с исходным KittenRegistry
 Деплоим PatShop из файла KittenRegistry  
-![pic1](https://github.com/sotnikea/Internship_Apriorit/raw/main/part11/dz_11/pic1/1.png)   
+![pic1](https://github.com/sotnikea/Internship_2022/raw/main/part11/dz_11/pic1/1.png)   
 
 Копируем адрес задеплоенного PatShop и используем его в качестве данных конструктора для деплоя KittenRegistry из файла KittenRegistry  
 Таким образом база данных зарегистрированных животных привязывается к магазину  
-![pic2](https://github.com/sotnikea/Internship_Apriorit/raw/main/part11/dz_11/pic1/2.png)    
+![pic2](https://github.com/sotnikea/Internship_2022/raw/main/part11/dz_11/pic1/2.png)    
 
 Деплоим написанный код контракта для животных  
-![pic3](https://github.com/sotnikea/Internship_Apriorit/raw/main/part11/dz_11/pic1/3.png)    
+![pic3](https://github.com/sotnikea/Internship_2022/raw/main/part11/dz_11/pic1/3.png)    
 
 Используем функцию SetKittenRegistry с адресом KittenRegistry, чтобы после покупки, кот сразу регистрировался в базе данных  
-![pic4](https://github.com/sotnikea/Internship_Apriorit/raw/main/part11/dz_11/pic1/4.png)    
+![pic4](https://github.com/sotnikea/Internship_2022/raw/main/part11/dz_11/pic1/4.png)    
 
 Вводим нужную сумму для покупки и приобретаем по очереди 2 кота  
-![pic5](https://github.com/sotnikea/Internship_Apriorit/raw/main/part11/dz_11/pic1/5.png)    
+![pic5](https://github.com/sotnikea/Internship_2022/raw/main/part11/dz_11/pic1/5.png)    
 
 При попытке проверить баланс котов по адресу кошелька, с которого производилась оплата, видим, что котов в базе данных действительно два  
-![pic6](https://github.com/sotnikea/Internship_Apriorit/raw/main/part11/dz_11/pic1/6.png)    
+![pic6](https://github.com/sotnikea/Internship_2022/raw/main/part11/dz_11/pic1/6.png)    
 
 Регистрируем базу данных котов в созданном нами контракте  
-![pic7](https://github.com/sotnikea/Internship_Apriorit/raw/main/part11/dz_11/pic1/7.png)    
+![pic7](https://github.com/sotnikea/Internship_2022/raw/main/part11/dz_11/pic1/7.png)    
 
 В базе данных указываем адрес контракта и "нулевого" кота тем самым разрешая будущий перевод  
-![pic8](https://github.com/sotnikea/Internship_Apriorit/raw/main/part11/dz_11/pic1/8.png)   
+![pic8](https://github.com/sotnikea/Internship_2022/raw/main/part11/dz_11/pic1/8.png)   
 
 То же самое делаем с "первым" котом  
-![pic9](https://github.com/sotnikea/Internship_Apriorit/raw/main/part11/dz_11/pic1/9.png)    
+![pic9](https://github.com/sotnikea/Internship_2022/raw/main/part11/dz_11/pic1/9.png)    
 
 Отправляем на хранение "нулевого" кота с временем 0, чтобы его можно было сразу же забрать  
-![pic10](https://github.com/sotnikea/Internship_Apriorit/raw/main/part11/dz_11/pic1/10.png)    
+![pic10](https://github.com/sotnikea/Internship_2022/raw/main/part11/dz_11/pic1/10.png)    
 
 "Первого" кота отправляем с временем 1, чтобы его нельзя было забрать сразу  
-![pic11](https://github.com/sotnikea/Internship_Apriorit/raw/main/part11/dz_11/pic1/11.png)    
+![pic11](https://github.com/sotnikea/Internship_2022/raw/main/part11/dz_11/pic1/11.png)    
 
 Успешно забираем первого кота  
-![pic12](https://github.com/sotnikea/Internship_Apriorit/raw/main/part11/dz_11/pic1/12.png)   
+![pic12](https://github.com/sotnikea/Internship_2022/raw/main/part11/dz_11/pic1/12.png)   
 
 И видим, что забрать второго кота пока нельзя, т.к. срок хранения не истек. Т.е. весь функционал работает верно  
-![pic13](https://github.com/sotnikea/Internship_Apriorit/raw/main/part11/dz_11/pic1/13.png)    
+![pic13](https://github.com/sotnikea/Internship_2022/raw/main/part11/dz_11/pic1/13.png)    
 
 ### Тестирование контракта в сети Ropsten 
 
 Для начала нужно загрузить написанный контракт в сеть Ropsten. Для этого меняем тип окружения на Inject Web3. В процессе разворачивания контракта автоматически происходит подключение к Metamask с запросом на одобрение операции.  
-![pic1](https://github.com/sotnikea/Internship_Apriorit/raw/main/part11/dz_11/pic2/1.png)     
+![pic1](https://github.com/sotnikea/Internship_2022/raw/main/part11/dz_11/pic2/1.png)     
 
 По окончанию получаем адрес контракта в сети  
-![pic5](https://github.com/sotnikea/Internship_Apriorit/raw/main/part11/dz_11/pic2/5.png)     
+![pic5](https://github.com/sotnikea/Internship_2022/raw/main/part11/dz_11/pic2/5.png)     
 
 Деплоим по адресу в сети контракт магазина  
-![pic2](https://github.com/sotnikea/Internship_Apriorit/raw/main/part11/dz_11/pic2/2.png)     
+![pic2](https://github.com/sotnikea/Internship_2022/raw/main/part11/dz_11/pic2/2.png)     
 
 Указываем нужную сумму для покупки и приобретаем по очереди 2 кота. В процессе приобретения автоматически происходит подключение к Metamask с запросом на одобрение операции.  
-![pic3](https://github.com/sotnikea/Internship_Apriorit/raw/main/part11/dz_11/pic2/3.png)     
+![pic3](https://github.com/sotnikea/Internship_2022/raw/main/part11/dz_11/pic2/3.png)     
 
 Деплоим по адресу в сети наш контракт  
-![pic4](https://github.com/sotnikea/Internship_Apriorit/raw/main/part11/dz_11/pic2/4.png)     
+![pic4](https://github.com/sotnikea/Internship_2022/raw/main/part11/dz_11/pic2/4.png)     
 
 Так же по адресу в сети деплоим KittenRegistry  
-![pic6](https://github.com/sotnikea/Internship_Apriorit/raw/main/part11/dz_11/pic2/6.png)     
+![pic6](https://github.com/sotnikea/Internship_2022/raw/main/part11/dz_11/pic2/6.png)     
 
 Проверяем баланc котов на счету, с которого они были приобретены и видим, что котов действительно два  
-![pic7](https://github.com/sotnikea/Internship_Apriorit/raw/main/part11/dz_11/pic2/7.png)     
+![pic7](https://github.com/sotnikea/Internship_2022/raw/main/part11/dz_11/pic2/7.png)     
 
 Открываем информацию по транзакциям с покупкой котов  
-![pic8](https://github.com/sotnikea/Internship_Apriorit/raw/main/part11/dz_11/pic2/8.png)     
+![pic8](https://github.com/sotnikea/Internship_2022/raw/main/part11/dz_11/pic2/8.png)     
 
 И запоминаем id купленного первого кота  
-![pic9](https://github.com/sotnikea/Internship_Apriorit/raw/main/part11/dz_11/pic2/9.png)     
+![pic9](https://github.com/sotnikea/Internship_2022/raw/main/part11/dz_11/pic2/9.png)     
 
 И второго кота  
-![pic10](https://github.com/sotnikea/Internship_Apriorit/raw/main/part11/dz_11/pic2/10.png)     
+![pic10](https://github.com/sotnikea/Internship_2022/raw/main/part11/dz_11/pic2/10.png)     
 
 В базе данных указываем адрес нашего контракта в сети и первого кота с индексом 24 тем самым разрешая будущий перевод..  
 К сожалению дальнейший тест не возможен, поскольку контракт регистрации перевода не принимает транзакцию. Изучение логов контракта показывает, что последнюю подтвержденную транзакцию он провел более 700 дней назад.  
-![pic11](https://github.com/sotnikea/Internship_Apriorit/raw/main/part11/dz_11/pic2/11.png)     
+![pic11](https://github.com/sotnikea/Internship_2022/raw/main/part11/dz_11/pic2/11.png)     
 
 
-![pic12](https://github.com/sotnikea/Internship_Apriorit/raw/main/part11/dz_11/pic2/12.png) 
+![pic12](https://github.com/sotnikea/Internship_2022/raw/main/part11/dz_11/pic2/12.png) 
 
-![pic13](https://github.com/sotnikea/Internship_Apriorit/raw/main/part11/dz_11/pic2/13.png)     
+![pic13](https://github.com/sotnikea/Internship_2022/raw/main/part11/dz_11/pic2/13.png)     
 
 # Оценка результата
 60 из 100  
