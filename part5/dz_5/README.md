@@ -101,31 +101,31 @@ int main(void) {
 ~~~
 
 Теперь перейдем к подключению google test. Нажимаем правой кнопкой мыши по заголовку проекта в обозревателе решений  
-![image_1](https://github.com/sotnikea/Internship_Apriorit/raw/main/part5/dz_5/img/pic1.png)   
+![image_1](https://github.com/sotnikea/Internship_2022/raw/main/part5/dz_5/img/pic1.png)   
 
 Выбираем в списке проектов Google Test  
-![image_2](https://github.com/sotnikea/Internship_Apriorit/raw/main/part5/dz_5/img/pic2.png)
+![image_2](https://github.com/sotnikea/Internship_2022/raw/main/part5/dz_5/img/pic2.png)
 
 Задаем проекту название и нажимаем кнопку "Создать"  
-![image_3](https://github.com/sotnikea/Internship_Apriorit/raw/main/part5/dz_5/img/pic3.png)
+![image_3](https://github.com/sotnikea/Internship_2022/raw/main/part5/dz_5/img/pic3.png)
 
 В выборе конфигурации ничего не меняем  
-![image_4](https://github.com/sotnikea/Internship_Apriorit/raw/main/part5/dz_5/img/pic4.png)
+![image_4](https://github.com/sotnikea/Internship_2022/raw/main/part5/dz_5/img/pic4.png)
 
 Открываем свойства добавленного проекта Google Test   
-![image_5](https://github.com/sotnikea/Internship_Apriorit/raw/main/part5/dz_5/img/pic5.png)
+![image_5](https://github.com/sotnikea/Internship_2022/raw/main/part5/dz_5/img/pic5.png)
 
 И указываем, что не будем использовать precompiled headers  
-![image_6](https://github.com/sotnikea/Internship_Apriorit/raw/main/part5/dz_5/img/pic6.png)
+![image_6](https://github.com/sotnikea/Internship_2022/raw/main/part5/dz_5/img/pic6.png)
 
 В строке Preprocessor Definition нажимаем кнопку Edit  
-![image_7](https://github.com/sotnikea/Internship_Apriorit/raw/main/part5/dz_5/img/pic7.png)
+![image_7](https://github.com/sotnikea/Internship_2022/raw/main/part5/dz_5/img/pic7.png)
 
 И указываем значение: _SILENCE_TR1_NAMESPACE_DEPRECATION_WARNING  
-![image_8](https://github.com/sotnikea/Internship_Apriorit/raw/main/part5/dz_5/img/pic8.png)
+![image_8](https://github.com/sotnikea/Internship_2022/raw/main/part5/dz_5/img/pic8.png)
 
 В файле test.cpp созданного google test проекта подключаем файл с функцией, для тестирования  
-![image_9](https://github.com/sotnikea/Internship_Apriorit/raw/main/part5/dz_5/img/pic9.png)
+![image_9](https://github.com/sotnikea/Internship_2022/raw/main/part5/dz_5/img/pic9.png)
 
 На этом этапе попытка билда проекта уже должна быть успешной.  
 Перейдем к написанию тестов. Воспользуемся паттерном [AAA](https://medium.com/@pjbgf/title-testing-code-ocd-and-the-aaa-pattern-df453975ab80).   
@@ -249,7 +249,7 @@ TEST(GetProductsAmountTest, TwoProductsWithLowerPriceOrOneMoreExpensive) {
 ~~~
 
 Запуск тестов показывает, что все они проходят успешно:  
-![image_10](https://github.com/sotnikea/Internship_Apriorit/raw/main/part5/dz_5/img/pic10.png)
+![image_10](https://github.com/sotnikea/Internship_2022/raw/main/part5/dz_5/img/pic10.png)
 
 *Задание 2*  
 TDD или разработка через тестирование, предполагает фактически написание теста, который должна выполнять функция, но функционал для этого теста еще не реализован. В последствии функционал реализуется и формируется новый тест. Попробуем выполнить это условие.  
